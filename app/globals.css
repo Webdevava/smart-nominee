@@ -2,20 +2,134 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@font-face {
+  font-family: Montserrat;
+  src: url("/fonts/Montserrat.ttf");
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Montserrat, Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 93%;
+    --foreground: 222 63% 15%;
+    --card: 0 0% 98%;
+    --card-foreground: 24 6% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 24 6% 10%;
+    --primary: 221 85% 54%;
+    --primary-foreground: 60 9% 98%;
+    --secondary: 222 11% 81%;
+    --secondary-foreground: 20 5% 15%;
+    --muted: 216 100% 98%;
+    --muted-foreground: 240 2% 46%;
+    --accent: 217 98% 91%;
+    --accent-foreground: 20 5% 15%;
+    --destructive: 359 100% 60%;
+    --destructive-foreground: 60 9% 98%;
+    --border: 240 5% 90%;
+    --input: 240 5% 90%;
+    --ring: 24 6% 10%;
+    --success: 134 45% 49%;
+    --success-accent: 129 100% 96%;
+    --warning: 51 100% 50%;
+    --warning-accent: 52 80% 90%;
+    --info: 215 65% 54%;
+    --info-accent: 217 100% 95%;
+    --critical: 39 100% 50%;
+    --critical-accent: 39 90% 92%;
+    --error: 359 100% 60%;
+    --error-accent: 0 71% 94%;
+    --chart-1: 24 94% 53%;
+    --chart-2: 171 72% 51%;
+    --chart-3: 221 74% 33%;
+    --chart-4: 49 97% 47%;
+    --chart-5: 24 94% 53%;
+    --radius: 0.65rem;
+  }
+
+  .dark {
+    /* Dark theme base colors */
+    --background: 222 47% 11%;
+    --foreground: 213 31% 91%;
+    --card: 222 47% 13%;
+    --card-foreground: 213 31% 91%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 213 31% 91%;
+    
+    /* Primary and secondary colors */
+    --primary: 221 85% 54%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 47% 25%;
+    --secondary-foreground: 213 31% 91%;
+    
+    /* Muted and accent colors */
+    --muted: 223 47% 16%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 98% 28%;
+    --accent-foreground: 213 31% 91%;
+    
+    /* System colors */
+    --destructive: 359 100% 60%;
+    --destructive-foreground: 213 31% 91%;
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 216 34% 17%;
+    
+    /* Status colors */
+    --success: 142 70% 45%;
+    --success-accent: 142 76% 16%;
+    --warning: 38 92% 50%;
+    --warning-accent: 47 92% 22%;
+    --info: 215 65% 54%;
+    --info-accent: 215 70% 20%;
+    --critical: 39 100% 50%;
+    --critical-accent: 36 100% 20%;
+    --error: 359 100% 60%;
+    --error-accent: 359 85% 20%;
+    
+    /* Chart colors */
+    --chart-1: 24 94% 53%;
+    --chart-2: 171 72% 51%;
+    --chart-3: 221 74% 48%;
+    --chart-4: 49 97% 47%;
+    --chart-5: 24 94% 53%;
+    
+    /* Border radius */
+    --radius: 0.65rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  .card-gradient {
+    @apply rounded-[24px];
+background: linear-gradient(135deg, #EEEEEE 47.92%, #F6F6F6 60.42%, #EEEEEE 72.92%);
+
+  }
+
+  .sidebar {
+    @apply bg-card;
+    @apply shadow-[0px_8px_11px_-3px_rgba(0,0,0,0.08)] rounded-[20px];
+  }
+}
+
+.page-transition{
+  opacity: 0.25;
+  filter: blur(2px);
+  scale: 0.99;
+}
+
+#page-container{
+    transition-property: opacity, scale, filter;
+  transition-duration: 500ms;
+  transition-timing-function: ease-in-out;
 }
