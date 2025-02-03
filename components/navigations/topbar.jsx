@@ -6,6 +6,7 @@
   import Link from "next/link";
   import { usePathname, useRouter } from "next/navigation";
   import TransitionLink from "../utils/TransitionLink";
+import { Button } from "../ui/button";
 
   const Topbar = () => {
     const router = useRouter();
@@ -46,7 +47,7 @@
     ];
 
     return (
-      <header className="bg-foreground flex items-center justify-between p-4 text-background h-16 shadow-md md:rounded-none rounded-full">
+      <header className="bg-foreground dark:bg-secondary flex items-center justify-between p-4 text-background h-16 shadow-md md:rounded-none rounded-full">
         {/* Logo - Hidden on mobile */}
         <div
           className="hidden md:block cursor-pointer"
@@ -73,7 +74,7 @@
                     className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
                       isActive
                         ? "text-primary bg-card font-bold shadow-sm"
-                        : "hover:text-blue-300"
+                        : "hover:text-blue-300 text-white/75"
                     }`}
                   >
                     {item.icon}
@@ -90,14 +91,25 @@
 
         {/* Actions */}
         <div className="flex gap-4 items-center">
-          <button
+          <Button
+          size="icon"
+          variant="ghost"
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="p-2 rounded-full hover:bg-[#1C2E59] transition-colors hidden md:block"
+            className=" text-white/75"
           >
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-          <Bell className="cursor-pointer hidden md:block" size={20} />
+          </Button>
+
+          <Button
+          size="icon"
+          variant="ghost"
+            aria-label="Notification"
+            className=" text-white/75"
+          >
+          <Bell className="" size={20} />
+          </Button>
+
           <Avatar className="h-8 w-8">
             <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>

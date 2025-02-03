@@ -51,56 +51,51 @@ body {
   }
 
   .dark {
-    /* Dark theme base colors */
-    --background: 222 47% 11%;
-    --foreground: 213 31% 91%;
-    --card: 222 47% 13%;
-    --card-foreground: 213 31% 91%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 213 31% 91%;
-    
-    /* Primary and secondary colors */
+    --background: 220 10% 8%;
+    --foreground: 0 0% 93%; 
+    --card: 220 9% 10%;
+    --card-foreground: 0 0% 93%;
+    --popover: 220 9% 12%;
+    --popover-foreground: 0 0% 93%;
     --primary: 221 85% 54%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 222 47% 25%;
-    --secondary-foreground: 213 31% 91%;
-    
-    /* Muted and accent colors */
-    --muted: 223 47% 16%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 217 98% 28%;
-    --accent-foreground: 213 31% 91%;
-    
-    /* System colors */
-    --destructive: 359 100% 60%;
-    --destructive-foreground: 213 31% 91%;
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
-    --ring: 216 34% 17%;
-    
-    /* Status colors */
-    --success: 142 70% 45%;
-    --success-accent: 142 76% 16%;
-    --warning: 38 92% 50%;
-    --warning-accent: 47 92% 22%;
-    --info: 215 65% 54%;
-    --info-accent: 215 70% 20%;
-    --critical: 39 100% 50%;
-    --critical-accent: 36 100% 20%;
-    --error: 359 100% 60%;
-    --error-accent: 359 85% 20%;
-    
-    /* Chart colors */
-    --chart-1: 24 94% 53%;
-    --chart-2: 171 72% 51%;
-    --chart-3: 221 74% 48%;
-    --chart-4: 49 97% 47%;
-    --chart-5: 24 94% 53%;
-    
-    /* Border radius */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 249, 9%, 16%; 
+    --secondary-foreground: 0 0% 93%;
+    --muted: 220 10% 15%;
+    --muted-foreground: 240 2% 65%;
+    --accent: 217 90% 30%; 
+    --accent-foreground: 0 0% 93%;
+    --destructive: 359 80% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 10% 20%;
+    --input: 220 10% 20%;
+    --ring: 221 85% 54%;
+    --success: 134 50% 40%;
+    --success-accent: 129 70% 25%;
+    --warning: 51 100% 45%;
+    --warning-accent: 52 80% 30%;
+    --info: 215 70% 50%;
+    --info-accent: 217 80% 30%;
+    --critical: 39 90% 45%;
+    --critical-accent: 39 80% 25%;
+    --error: 359 80% 50%;
+    --error-accent: 0 60% 30%;
+    --chart-1: 24 85% 45%;
+    --chart-2: 171 72% 40%;
+    --chart-3: 221 74% 25%;
+    --chart-4: 49 97% 40%;
+    --chart-5: 24 85% 45%;
     --radius: 0.65rem;
   }
 }
+
+/* 
+Primary Color (#2561ED) → HSL(220, 85%, 54%)
+Secondary Color (#0F1D40) → HSL(223, 61%, 15%)
+Background Color 1 (#121416) → HSL(210, 9%, 8%)
+Background Color 2 (#1D1C21) → HSL(260, 7%, 12%)
+Title Text Color (#FFFFFF) → HSL(0, 0%, 100%)
+Body Text Color (#A4A9B6) → HSL(226, 12%, 69%) */
 
 @layer base {
   * {

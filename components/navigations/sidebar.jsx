@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,16 +11,32 @@ import {
 import { Button } from "@/components/ui/button";
 import { CirclePlus, SidebarClose, SidebarOpen } from "lucide-react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import SidebarContactCard from "@/components/cards/sidebar-contact-card";
+import AddContactDialog from "@/components/dialogs/add-contact";
+import AddAddressDialog from "@/components/dialogs/add-address";
+import AddDocumentDialog from "@/components/dialogs/add-document";
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(true);
+  const [openDialog, setOpenDialog] = useState({
+    contact: false,
+    address: false,
+    document: false
+  });
 
   const toggleExpand = () => {
     setExpanded(!expanded);
   };
 
-  // Main container animation
+  // Dialog handlers
+  const handleOpenDialog = (dialogType) => {
+    setOpenDialog(prev => ({ ...prev, [dialogType]: true }));
+  };
+
+  const handleCloseDialog = (dialogType) => {
+    setOpenDialog(prev => ({ ...prev, [dialogType]: false }));
+  };
+
+  // Animation variants remain the same...
   const containerVariants = {
     expanded: {
       width: "24rem",
@@ -42,7 +58,6 @@ const Sidebar = () => {
     },
   };
 
-  // Profile section animations with stagger effect
   const profileVariants = {
     expanded: {
       transition: {
@@ -79,7 +94,6 @@ const Sidebar = () => {
     },
   };
 
-  // Content section animations
   const contentVariants = {
     expanded: {
       opacity: 1,
@@ -106,11 +120,12 @@ const Sidebar = () => {
     <LayoutGroup>
       <motion.aside
         layout
-        className="bg-muted  p-4 flex flex-col gap-6 h-full overflow-hidden sidebar"
+        className="bg-muted p-4 flex flex-col gap-6 h-full overflow-hidden sidebar"
         variants={containerVariants}
         initial="collapsed"
         animate={expanded ? "expanded" : "collapsed"}
       >
+        {/* Profile section remains the same... */}
         <motion.div layout className="flex items-center justify-end">
           <Button
             className="size-8 bg-background text-foreground hover:bg-secondary"
@@ -156,16 +171,10 @@ const Sidebar = () => {
                 exit="collapsed"
                 className="flex flex-col items-center gap-2"
               >
-                <motion.p
-                  variants={profileItemVariants}
-                  className="text-xl font-bold"
-                >
+                <motion.p variants={profileItemVariants} className="text-xl font-bold">
                   John Deo
                 </motion.p>
-                <motion.p
-                  variants={profileItemVariants}
-                  className="flex items-center gap-2 text-xs"
-                >
+                <motion.p variants={profileItemVariants} className="flex items-center gap-2 text-xs">
                   <span>Date of Birth:</span>
                   <span className="font-semibold">2 May 1987</span>
                 </motion.p>
@@ -184,7 +193,7 @@ const Sidebar = () => {
               className="w-full h-full"
             >
               <Tabs defaultValue="Contact" className="w-full h-full">
-                <Card className=" bg-popover rounded-lg min-h-96 h-full flex flex-col justify-between p-0 overflow-hidden">
+                <Card className="bg-popover rounded-lg min-h-96 h-full flex flex-col justify-between p-0 overflow-hidden">
                   <CardHeader className="p-2 border-b">
                     <TabsList className="w-full bg-transparent">
                       <TabsTrigger
@@ -209,33 +218,68 @@ const Sidebar = () => {
                   </CardHeader>
 
                   <CardContent className="p-2 flex-1">
-                    <TabsContent
-                      value="Contact"
-                      className="h-full flex flex-col gap-2"
-                    >
-                      <SidebarContactCard />
-                      <SidebarContactCard />
+                    <TabsContent value="Contact" className="h-full flex-1">
+                      <div className="h-full flex items-center justify-center flex-col gap-3">
+                        <p className="text-center text-sm"><span>You have not added <span className="font-semibold">“Contacts”</span> yet. </span><br />
+                        <span>Please Click on <span className="font-semibold">“Add Contact”</span> button to add details.</span></p>
+                      <Button 
+                          size="sm"
+                          onClick={() => handleOpenDialog('contact')}
+                        >
+                          <CirclePlus className="mr-2 h-4 w-4" />
+                          Add Contact
+                        </Button>
+                      </div>
                     </TabsContent>
-                    <TabsContent value="Address" className="h-full">
-                      Change your Address here.
+                    <TabsContent value="Address" className="h-full flex-1">
+                      
+                    <div className="h-full flex items-center justify-center flex-col gap-3">
+                        <p className="text-center text-sm"><span>You have not added <span className="font-semibold">“Address”</span> yet. </span><br />
+                        <span>Please Click on <span className="font-semibold">“Add address”</span> button to add details.</span></p>
+                      <Button 
+                          size="sm"
+                          onClick={() => handleOpenDialog('address')}
+                        >
+                          <CirclePlus className="mr-2 h-4 w-4" />
+                          Add Address
+                        </Button>
+                      </div>
                     </TabsContent>
-                    <TabsContent value="Documents" className="h-full">
-                      Change your Documents here.
+                    <TabsContent value="Documents" className="h-full flex-1">
+                      
+                    <div className="h-full flex items-center justify-center flex-col gap-3">
+                        <p className="text-center text-sm"><span>You have not added <span className="font-semibold">“Documents”</span> yet. </span><br />
+                        <span>Please Click on <span className="font-semibold">“Add document”</span> button to add details.</span></p>
+                      <Button 
+                          size="sm"
+                          onClick={() => handleOpenDialog('document')}
+                        >
+                          <CirclePlus className="mr-2 h-4 w-4" />
+                          Add Document
+                        </Button>
+                      </div>
                     </TabsContent>
                   </CardContent>
-
-                  <CardFooter className="p-2">
-                    <Button className="w-full">
-                      <CirclePlus />
-                      Add Contact
-                    </Button>
-                  </CardFooter>
                 </Card>
               </Tabs>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.aside>
+
+      {/* Dialogs */}
+      <AddContactDialog 
+        open={openDialog.contact} 
+        onOpenChange={(open) => handleCloseDialog('contact')} 
+      />
+      <AddAddressDialog 
+        open={openDialog.address} 
+        onOpenChange={(open) => handleCloseDialog('address')} 
+      />
+      <AddDocumentDialog 
+        open={openDialog.document} 
+        onOpenChange={(open) => handleCloseDialog('document')} 
+      />
     </LayoutGroup>
   );
 };
