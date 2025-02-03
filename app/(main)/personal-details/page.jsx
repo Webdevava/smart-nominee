@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FamilyMembersList from "./family-details";
@@ -7,14 +8,16 @@ import FinancialDetails from "./financial-details";
 import InsuranceDetails from "./insurance-details";
 import { useRouter, useSearchParams } from 'next/navigation';
 
-function PersonalDetails() {
+function TabHandler({ children }) {
+  return <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>;
+}
+
+function TabContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  // Get current tab from URL or default to FamilyDetails
   const currentTab = searchParams.get('tab') || 'FamilyDetails';
-  
-  // Update URL when tab changes
+
   const handleTabChange = (value) => {
     const params = new URLSearchParams(searchParams);
     params.set('tab', value);
@@ -22,10 +25,16 @@ function PersonalDetails() {
   };
 
   return (
+    <PersonalDetails currentTab={currentTab} onTabChange={handleTabChange} />
+  );
+}
+
+function PersonalDetails({ currentTab, onTabChange }) {
+  return (
     <Card className="p-4 bg-muted border-0 shadow-none">
       <Tabs
         value={currentTab}
-        onValueChange={handleTabChange}
+        onValueChange={onTabChange}
         className="w-full h-full flex flex-col"
       >
         <div className="bg-popover rounded-lg p-2">
@@ -70,4 +79,10 @@ function PersonalDetails() {
   );
 }
 
-export default PersonalDetails;
+export default function PersonalDetailsWrapper() {
+  return (
+    <TabHandler>
+      <TabContent />
+    </TabHandler>
+  );
+}
