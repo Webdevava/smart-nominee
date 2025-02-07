@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,31 +16,73 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { createFamilyMember } from "@/utils/family-api";
 
 const AddMemberDialog = ({ open, onOpenChange }) => {
-  
-  const documentTypes = [
-    "Aadhaar Card",
-    "PAN Card",
-    "Passport",
-    "Driving License",
-    "Voting Card",
-    "Other"
-  ];
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    relationship: "",
+    dob: "",
+    gender: "male", // Default value as per API
+    email: "",
+    phone_number: "",
+    adhaar_number: "",
+  });
 
   const relationships = [
     "Father",
     "Mother",
     "Brother",
     "Sister",
+    "Spouse",
+    "Child",
     "Other"
   ];
 
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
 
-  const handleSubmit = (e) => {
+  const handleRelationshipChange = (value) => {
+    setFormData(prev => ({
+      ...prev,
+      relationship: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    onOpenChange(false);
+    setLoading(true);
+
+    try {
+      const response = await createFamilyMember(formData);
+      
+      if (response.status) {
+        toast({
+          title: "Success",
+          description: "Family member added successfully",
+        });
+        onOpenChange(false);
+      } else {
+        throw new Error(response.message || "Failed to add family member");
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to add family member",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,19 +94,38 @@ const AddMemberDialog = ({ open, onOpenChange }) => {
         <form onSubmit={handleSubmit} className="flex flex-col h-full">
           <div className="flex-1 overflow-y-auto">
             <div className="grid gap-4 p-4">
-              {/* Personal Information */}
-              <div className="grid gap-2">
-                <Label htmlFor="fullName">Full Name</Label>
-                <Input
-                  id="fullName"
-                  placeholder="Enter full name"
-                  className="w-full"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="first_name">First Name</Label>
+                  <Input
+                    id="first_name"
+                    value={formData.first_name}
+                    onChange={handleInputChange}
+                    placeholder="Enter first name"
+                    className="w-full"
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="last_name">Last Name</Label>
+                  <Input
+                    id="last_name"
+                    value={formData.last_name}
+                    onChange={handleInputChange}
+                    placeholder="Enter last name"
+                    className="w-full"
+                    required
+                  />
+                </div>
               </div>
 
               <div className="grid gap-2">
                 <Label htmlFor="relationship">Relationship</Label>
-                <Select>
+                <Select
+                  value={formData.relationship}
+                  onValueChange={handleRelationshipChange}
+                  required
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select relationship" />
                   </SelectTrigger>
@@ -78,44 +140,71 @@ const AddMemberDialog = ({ open, onOpenChange }) => {
               </div>
 
               <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter email"
-                    className="w-full"
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="Enter phone number"
-                    className="w-full"
-                  />
-                </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="age">Age</Label>
+                <Label htmlFor="dob">Date of Birth</Label>
                 <Input
-                  id="age"
-                  type="number"
-                  placeholder="Enter age"
+                  id="dob"
+                  type="date"
+                  value={formData.dob}
+                  onChange={handleInputChange}
                   className="w-full"
+                  required
                 />
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="gender">Gender</Label>
+                <Select
+                  value={formData.gender}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, gender: value }))}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="address"
-                  placeholder="Enter address"
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Enter email"
                   className="w-full"
+                  required
                 />
               </div>
 
+              <div className="grid gap-2">
+                <Label htmlFor="phone_number">Phone Number</Label>
+                <Input
+                  id="phone_number"
+                  value={formData.phone_number}
+                  onChange={handleInputChange}
+                  placeholder="Enter phone number"
+                  className="w-full"
+                  required
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="adhaar_number">Adhaar Number</Label>
+                <Input
+                  id="adhaar_number"
+                  value={formData.adhaar_number}
+                  onChange={handleInputChange}
+                  placeholder="Enter Adhaar number"
+                  className="w-full"
+                  required
+                />
+              </div>
             </div>
           </div>
           <DialogFooter className="border-t p-4">
@@ -124,14 +213,16 @@ const AddMemberDialog = ({ open, onOpenChange }) => {
               variant="outline"
               onClick={() => onOpenChange(false)}
               className="w-32 bg-popover border-foreground"
+              disabled={loading}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               className="w-32"
+              disabled={loading}
             >
-              Add
+              {loading ? "Adding..." : "Add"}
             </Button>
           </DialogFooter>
         </form>

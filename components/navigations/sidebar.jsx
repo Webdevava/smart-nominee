@@ -1,19 +1,13 @@
 'use client'
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CirclePlus, SidebarClose, SidebarOpen } from "lucide-react";
+import { SidebarClose, SidebarOpen } from "lucide-react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import AddContactDialog from "@/components/dialogs/add-contact";
 import AddAddressDialog from "@/components/dialogs/add-address";
 import AddDocumentDialog from "@/components/dialogs/add-document";
+import ProfileTabs from "./profile-tabs";
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(true);
@@ -27,7 +21,6 @@ const Sidebar = () => {
     setExpanded(!expanded);
   };
 
-  // Dialog handlers
   const handleOpenDialog = (dialogType) => {
     setOpenDialog(prev => ({ ...prev, [dialogType]: true }));
   };
@@ -36,7 +29,6 @@ const Sidebar = () => {
     setOpenDialog(prev => ({ ...prev, [dialogType]: false }));
   };
 
-  // Animation variants remain the same...
   const containerVariants = {
     expanded: {
       width: "24rem",
@@ -120,12 +112,11 @@ const Sidebar = () => {
     <LayoutGroup>
       <motion.aside
         layout
-        className="bg-muted p-4 flex flex-col gap-6 h-full overflow-hidden sidebar"
+        className="bg-muted p-4 flex flex-col gap-6 h-full overflow-hidden sidebar rounded-2xl"
         variants={containerVariants}
         initial="collapsed"
         animate={expanded ? "expanded" : "collapsed"}
       >
-        {/* Profile section remains the same... */}
         <motion.div layout className="flex items-center justify-end">
           <Button
             className="size-8 bg-background text-foreground hover:bg-secondary"
@@ -184,102 +175,14 @@ const Sidebar = () => {
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {expanded && (
-            <motion.div
-              variants={contentVariants}
-              initial="collapsed"
-              animate="expanded"
-              exit="collapsed"
-              className="w-full h-full"
-            >
-              <Tabs defaultValue="Contact" className="w-full h-full">
-                <Card className="bg-popover rounded-lg min-h-96 h-full flex flex-col justify-between p-0 overflow-hidden">
-                  <CardHeader className="p-2 border-b">
-                    <TabsList className="w-full bg-transparent">
-                      <TabsTrigger
-                        value="Contact"
-                        className="w-full data-[state=active]:bg-foreground data-[state=active]:text-background"
-                      >
-                        Contact
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="Address"
-                        className="w-full data-[state=active]:bg-foreground data-[state=active]:text-background"
-                      >
-                        Address
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="Documents"
-                        className="w-full data-[state=active]:bg-foreground data-[state=active]:text-background"
-                      >
-                        Documents
-                      </TabsTrigger>
-                    </TabsList>
-                  </CardHeader>
-
-                  <CardContent className="p-2 flex-1">
-                    <TabsContent value="Contact" className="h-full flex-1">
-                      <div className="h-full flex items-center justify-center flex-col gap-3">
-                        <p className="text-center text-sm"><span>You have not added <span className="font-semibold">“Contacts”</span> yet. </span><br />
-                        <span>Please Click on <span className="font-semibold">“Add Contact”</span> button to add details.</span></p>
-                      <Button 
-                          size="sm"
-                          onClick={() => handleOpenDialog('contact')}
-                        >
-                          <CirclePlus className="mr-2 h-4 w-4" />
-                          Add Contact
-                        </Button>
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="Address" className="h-full flex-1">
-                      
-                    <div className="h-full flex items-center justify-center flex-col gap-3">
-                        <p className="text-center text-sm"><span>You have not added <span className="font-semibold">“Address”</span> yet. </span><br />
-                        <span>Please Click on <span className="font-semibold">“Add address”</span> button to add details.</span></p>
-                      <Button 
-                          size="sm"
-                          onClick={() => handleOpenDialog('address')}
-                        >
-                          <CirclePlus className="mr-2 h-4 w-4" />
-                          Add Address
-                        </Button>
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="Documents" className="h-full flex-1">
-                      
-                    <div className="h-full flex items-center justify-center flex-col gap-3">
-                        <p className="text-center text-sm"><span>You have not added <span className="font-semibold">“Documents”</span> yet. </span><br />
-                        <span>Please Click on <span className="font-semibold">“Add document”</span> button to add details.</span></p>
-                      <Button 
-                          size="sm"
-                          onClick={() => handleOpenDialog('document')}
-                        >
-                          <CirclePlus className="mr-2 h-4 w-4" />
-                          Add Document
-                        </Button>
-                      </div>
-                    </TabsContent>
-                  </CardContent>
-                </Card>
-              </Tabs>
-            </motion.div>
-          )}
+          <ProfileTabs 
+            expanded={expanded}
+            contentVariants={contentVariants}
+            handleOpenDialog={handleOpenDialog}
+          />
         </AnimatePresence>
-      </motion.aside>
 
-      {/* Dialogs */}
-      <AddContactDialog 
-        open={openDialog.contact} 
-        onOpenChange={(open) => handleCloseDialog('contact')} 
-      />
-      <AddAddressDialog 
-        open={openDialog.address} 
-        onOpenChange={(open) => handleCloseDialog('address')} 
-      />
-      <AddDocumentDialog 
-        open={openDialog.document} 
-        onOpenChange={(open) => handleCloseDialog('document')} 
-      />
+      </motion.aside>
     </LayoutGroup>
   );
 };

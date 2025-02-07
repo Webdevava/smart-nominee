@@ -14,6 +14,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import AddBankDialog from "@/components/dialogs/add-bank";
+import LoginDialog from "@/components/auth/login-dialog";
+import SignUpDialog from "@/components/auth/signup-dialog";
 
 export default function Page() {
 
@@ -53,216 +56,12 @@ export default function Page() {
       }
     };
   return (
+
     <div>
-      <AuthDialog>
-        <AuthDialogTrigger asChild>
-          <Button variant="outline">Hello</Button>
-        </AuthDialogTrigger>
-        <AuthDialogContent className="sm:max-w-[425px]">
-          <AuthDialogHeader className="flex items-center justify-center flex-col text-center">
-            <AuthDialogTitle className="text-3xl font-bold">
-              Welcome Back
-            </AuthDialogTitle>
-            <AuthDialogDescription className="text-sm">
-              Glad to see you again 👋
-            </AuthDialogDescription>
-            <AuthDialogDescription className="text-sm">
-              Login to your account below
-            </AuthDialogDescription>
-          </AuthDialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="flex flex-col">
-              <Label
-                htmlFor="email"
-                className="text-left text-[0.7rem] opacity-50 mb-1"
-              >
-                Name
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter email"
-                className="col-span-3 placeholder:text-[0.8rem]"
-              />
-            </div>
-            <div className="flex flex-col">
-              <Label
-                htmlFor="password"
-                className="text-left text-[0.7rem] opacity-50 mb-1"
-              >
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter password"
-                className="col-span-3 placeholder:text-[0.8rem] "
-              />
-              <p className="text-right text-[0.7rem] mt-1 text-primary font-semibold">
-                Forgot Password?
-              </p>
-            </div>
-          </div>
-          <Button type="submit">Login</Button>
-          <AuthDialogFooter className="flex items-center justify-center">
-            <p className="text-sm text-center w-full">
-              Don&apos;t have account?{" "}
-              <span className="text-primary font-semibold">Sign Up</span>
-            </p>
-          </AuthDialogFooter>
-        </AuthDialogContent>
-      </AuthDialog>
 
-      <AuthDialog>
-        <AuthDialogTrigger asChild>
-          <Button variant="outline">Sign Up</Button>
-        </AuthDialogTrigger>
-        <AuthDialogContent className="sm:max-w-[600px]">
-          <AuthDialogHeader className="flex items-center justify-center flex-col text-center">
-            <AuthDialogTitle className="text-3xl font-bold">
-              Create Your Account
-            </AuthDialogTitle>
-            <AuthDialogDescription className="text-sm">
-              Enter your details below to create your account & get started.
-            </AuthDialogDescription>
-          </AuthDialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <Label
-                  htmlFor="fullname"
-                  className="text-[0.7rem] opacity-50 mb-1"
-                >
-                  Full Name
-                </Label>
-                <Input
-                  id="fullname"
-                  placeholder="Enter full name"
-                  className="placeholder:text-[0.8rem]"
-                />
-              </div>
-              <div className="flex flex-col">
-                <Label
-                  htmlFor="email"
-                  className="text-[0.7rem] opacity-50 mb-1"
-                >
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter email"
-                  className="placeholder:text-[0.8rem]"
-                />
-              </div>
-            </div>
+        <LoginDialog/>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <Label
-                  htmlFor="phone"
-                  className="text-[0.7rem] opacity-50 mb-1"
-                >
-                  Phone Number
-                </Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="Enter phone number"
-                  className="placeholder:text-[0.8rem]"
-                />
-              </div>
-              <div className="flex flex-col">
-                <Label htmlFor="dob" className="text-[0.7rem] opacity-50 mb-1">
-                  Date of Birth
-                </Label>
-                <Input
-                  id="dob"
-                  type="date"
-                  className="placeholder:text-[0.8rem]"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <Label
-                  htmlFor="password"
-                  className="text-[0.7rem] opacity-50 mb-1"
-                >
-                  Password
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter password"
-                    className="placeholder:text-[0.8rem]"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-500" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-500" />
-                    )}
-                  </button>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <Label
-                  htmlFor="confirmPassword"
-                  className="text-[0.7rem] opacity-50 mb-1"
-                >
-                  Confirm Password
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm password"
-                    className="placeholder:text-[0.8rem]"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-500" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-500" />
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
-              <Label htmlFor="terms" className="text-xs">
-                I agreed to Privacy policy and Terms of service.
-              </Label>
-            </div>
-          </div>
-
-          <Button type="submit" className="w-full">
-            Sign Up
-          </Button>
-
-          <AuthDialogFooter className="flex items-center justify-center">
-            <p className="text-sm text-center w-full">
-              Already have an account?{" "}
-              <span className="text-primary font-semibold cursor-pointer">
-                Login
-              </span>
-            </p>
-          </AuthDialogFooter>
-        </AuthDialogContent>
-      </AuthDialog>
+<SignUpDialog/>
 
       <AuthDialog>
         <AuthDialogTrigger asChild>

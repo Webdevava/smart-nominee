@@ -60,7 +60,7 @@ const DepositCard = ({ deposit }) => (
         {deposit.details.map((item, index) => (
           <div key={index} className="bg-popover p-2 rounded-lg">
             <p className="text-xs text-muted-foreground">{item.label}</p>
-            <p className="font-semibold mt-2">{item.value}</p>
+            <p className="font-semibold mt-2 truncate">{item.value}</p>
           </div>
         ))}
       </div>

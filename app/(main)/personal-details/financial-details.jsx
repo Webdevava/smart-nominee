@@ -12,7 +12,7 @@ const FinancialDetails = () => {
 
 <Tabs
         defaultValue="Bank"
-        className="w-full h-full flex flex-col p-0 gap-0 mt-4"
+        className="w-full h-full flex flex-col p-0 gap-0"
       >
         <div className=" rounded-lg p-0">
           <TabsList className="bg-muted w-full p-0 m-0 shadow-none rounded-none flex items-center justify-start">

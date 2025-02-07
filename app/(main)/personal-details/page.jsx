@@ -31,7 +31,7 @@ function TabContent() {
 
 function PersonalDetails({ currentTab, onTabChange }) {
   return (
-    <Card className="p-4 bg-muted border-0 shadow-none">
+    <Card className="p-4 bg-muted border-0 shadow-none rounded-2xl min-h-full">
       <Tabs
         value={currentTab}
         onValueChange={onTabChange}
@@ -60,17 +60,17 @@ function PersonalDetails({ currentTab, onTabChange }) {
           </TabsList>
         </div>
         <TabsContent value="FamilyDetails" className="flex-1">
-          <div className="h-full bg-popover rounded-lg">
+          <div className="h-full bg-popover rounded-lg mt-4">
             <FamilyMembersList />
           </div>
         </TabsContent>
         <TabsContent value="FinancialDetails" className="flex-1">
-          <div className="h-full rounded-lg">
+          <div className="h-full rounded-lg mt-4">
             <FinancialDetails />
           </div>
         </TabsContent>
         <TabsContent value="InsuranceDetails" className="flex-1">
-          <div className="h-full rounded-lg">
+          <div className="h-full rounded-lg mt-4">
             <InsuranceDetails />
           </div>
         </TabsContent>

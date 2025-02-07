@@ -11,12 +11,12 @@ export default function MainLayout({ children }) {
       </div>
 
       <div className="flex flex-1">
-        <div className="p-2 h-[calc(100vh-0rem)] md:h-[calc(100vh-4rem)] hidden md:block">
+        <div className="p-3 pr-0 h-[calc(100vh-0rem)] md:h-[calc(100vh-4rem)] hidden md:block">
           <Sidebar />
         </div>
         <div
           id="page-container"
-          className="p-2 w-full overflow-auto h-[calc(100vh-4rem)] md:h-[calc(100vh-4rem)]"
+          className="p-3 w-full overflow-auto h-[calc(100vh-4rem)] md:h-[calc(100vh-4rem)]"
         >
           {children}
         </div>

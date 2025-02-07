@@ -113,7 +113,7 @@ background: linear-gradient(135deg, #EEEEEE 47.92%, #F6F6F6 60.42%, #EEEEEE 72.9
 
   .sidebar {
     @apply bg-card;
-    @apply shadow-[0px_8px_11px_-3px_rgba(0,0,0,0.08)] rounded-[20px];
+    @apply shadow-[0px_8px_11px_-3px_rgba(0,0,0,0.08)];
   }
 }
 

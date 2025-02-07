@@ -71,7 +71,7 @@ import { Button } from "../ui/button";
                 <li key={item.name}>
                   <TransitionLink
                     href={item.route}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                       isActive
                         ? "text-primary bg-card font-bold shadow-sm"
                         : "hover:text-blue-300 text-white/75"
