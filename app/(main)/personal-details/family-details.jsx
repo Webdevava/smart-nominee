@@ -14,6 +14,7 @@ import AddMemberDialog from "@/components/dialogs/add-member";
 import { getFamilyList, deleteFamilyMember } from "@/utils/family-api";
 import { useToast } from "@/hooks/use-toast";
 
+// ... keep all the utility functions the same ...
 const getRelationBgColor = (relation) => {
   const colors = {
     father: "bg-green-200 text-green-800 font-bold",
@@ -95,7 +96,7 @@ const FamilyMembersList = () => {
   if (members.length === 0) {
     return (
       <div className="flex flex-col justify-center items-center h-[60vh] gap-4">
-       <p className="text-center text-sm">
+        <p className="text-center text-sm">
           <span>You have not added <span className="font-semibold">"Address"</span> yet. </span><br />
           <span>Please Click on <span className="font-semibold">"Add address"</span> button to add details.</span>
         </p>
@@ -112,14 +113,22 @@ const FamilyMembersList = () => {
   }
 
   return (
-    <div className="p-2 sm:p-6 mx-auto">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6">
-        <h1 className="text-lg sm:text-xl font-semibold">
+    <div className="p-2 lg:p-8 mx-auto pb-20 sm:pb-2">
+      {/* Header - Hidden on small screens */}
+      <div className="hidden sm:flex flex-row justify-between items-center mb-6">
+        <h1 className="text-xl font-semibold">
           Total Member ({members.length})
         </h1>
-        <Button className="w-full sm:w-auto" onClick={() => setDialogOpen(true)}>
+        <Button onClick={() => setDialogOpen(true)}>
           <PlusCircle className="mr-2 h-4 w-4" /> Add Member
         </Button>
+      </div>
+
+      {/* Mobile Header */}
+      <div className="sm:hidden mb-6">
+        <h1 className="text-lg font-semibold">
+          Total Member ({members.length})
+        </h1>
       </div>
 
       <AddMemberDialog 
@@ -209,6 +218,13 @@ const FamilyMembersList = () => {
             </CardFooter>
           </Card>
         ))}
+      </div>
+
+      {/* Fixed Mobile Button */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t sm:hidden">
+        <Button className="w-full" onClick={() => setDialogOpen(true)}>
+          <PlusCircle className="mr-2 h-4 w-4" /> Add Member
+        </Button>
       </div>
     </div>
   );

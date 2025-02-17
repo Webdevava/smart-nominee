@@ -17,6 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import AddBankDialog from "@/components/dialogs/add-bank";
 import LoginDialog from "@/components/auth/login-dialog";
 import SignUpDialog from "@/components/auth/signup-dialog";
+import LandingPage from "@/components/landing/page";
 
 export default function Page() {
 
@@ -58,6 +59,7 @@ export default function Page() {
   return (
 
     <div>
+      <LandingPage/>
 
         <LoginDialog/>
 
