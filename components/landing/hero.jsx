@@ -26,7 +26,7 @@ export const Navbar = () => {
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8 text-sm">
+          <div className="hidden lg:flex items-center space-x-8 text-sm">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -39,7 +39,7 @@ export const Navbar = () => {
           </div>
 
           {/* Desktop Buttons */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-8">
             <Button className="px-4 py-2 rounded-lg bg-blue-500 w-24">
               Login
             </Button>
@@ -49,7 +49,7 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-white hover:text-gray-200 focus:outline-none"
@@ -76,7 +76,7 @@ export const Navbar = () => {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-white">
+        <div className="lg:hidden bg-white">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navLinks.map((link) => (
               <Link
@@ -107,15 +107,15 @@ export const Hero = () => {
   return (
     <div className="bg-gradient-to-b from-blue-600 to-blue-200 flex-1">
       <div className="mx-auto px-4 sm:px-6 lg:px-24">
-        <div className="flex flex-col-reverse md:flex-row items-center justify-between pt-12 md:pt-24 pb-12 md:pb-24 lg:pb-0">
+        <div className="flex flex-col-reverse lg:flex-row items-center justify-between pt-12 lg:pt-24 pb-12 lg:pb-24 lg:pb-0">
           {/* Text Content */}
-          <div className="space-y-6 text-center md:text-left text-white mt-8 md:mt-0">
-            <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold leading-tight">
+          <div className="space-y-6 text-center lg:text-left text-white mt-8 lg:mt-0">
+            <h1 className="text-3xl lg:text-5xl lg:text-7xl font-bold leading-tight">
               <span className="block">Secure Your</span>
               <span className="block text-black">Financial Future,</span>
               <span className="block">Hassle-Free</span>
             </h1>
-            <p className="text-base md:text-xl max-w-xl mx-auto md:mx-0">
+            <p className="text-base lg:text-xl max-w-xl mx-auto lg:mx-0">
               Easily manage and track your bank accounts, investments, and
               insurance policies while ensuring your loved ones have access
               when they need it the most.
@@ -126,11 +126,11 @@ export const Hero = () => {
           </div>
 
           {/* Image */}
-          <div className="w-full md:w-auto">
+          <div className="w-full lg:w-auto">
             <img
               src="/images/hero.png"
               alt="Person showing mobile app"
-              className="w-full max-w-2xl md:max-w-none md:w-[52rem] rounded-lg"
+              className="w-full max-w-2xl lg:max-w-none  rounded-lg"
             />
           </div>
         </div>
