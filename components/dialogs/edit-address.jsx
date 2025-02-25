@@ -78,7 +78,6 @@ const EditAddressDialog = ({ open, onOpenChange, address, onSuccess }) => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -99,19 +98,21 @@ const EditAddressDialog = ({ open, onOpenChange, address, onSuccess }) => {
       };
       
       const response = await updateAddress(address.id, data);
-      
-      if (response.id) {
+      console.log('Edit Address Response:', response);
+
+      if (response.status === true) {
         toast({
           title: "Success",
-          description: "Address updated successfully",
+          description: response.message || "Address updated successfully",
         });
         resetForm();
-        onOpenChange(false);
-        if (onSuccess) {
-          await onSuccess(); // Ensure we wait for the refresh to complete
-        }
+        onSuccess(); // Trigger list refresh in parent
+        onOpenChange(false); // Close dialog
+      } else {
+        throw new Error('Address update failed');
       }
     } catch (error) {
+      console.error('Edit Address Error:', error);
       toast({
         variant: "destructive",
         title: "Error",

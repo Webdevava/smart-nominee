@@ -3,101 +3,98 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { CirclePlus, Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { getAddressList, deleteAddress } from '@/utils/address-apis';
+import { 
+  getDocumentList, 
+  deleteDocument 
+} from '@/utils/document-apis';
 import { cn } from "@/lib/utils";
-import AddAddressDialog from '../dialogs/add-address';
-import EditAddressDialog from '../dialogs/edit-address';
+import AddDocumentDialog from '../dialogs/add-document';
+import EditDocumentDialog from '../dialogs/edit-document';
 
-const AddressList = () => {
+const DocumentList = () => {
   const { toast } = useToast();
-  const [addresses, setAddresses] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [selectedDocument, setSelectedDocument] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Fetch addresses
-  const fetchAddresses = useCallback(async () => {
+  const fetchDocuments = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await getAddressList();
-      console.log('Fetch Addresses Response:', response);
+      const response = await getDocumentList();
+      console.log('Fetch Documents Response:', response);
 
       // Check if the response indicates success
       if (response.status === true) {
-        setAddresses(response.data || []); // Set addresses, even if empty
+        setDocuments(response.data || []); // Set documents, even if empty
       } else {
-        throw new Error('Failed to fetch addresses');
+        throw new Error('Failed to fetch documents');
       }
     } catch (error) {
-      console.error('Fetch Addresses Error:', error);
+      console.error('Fetch Documents Error:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || 'Failed to fetch addresses',
+        description: error.message || 'Failed to fetch documents',
       });
-      setAddresses([]); // Reset to empty on error
+      setDocuments([]); // Reset to empty on error to avoid stale data
     } finally {
       setIsLoading(false);
     }
   }, [toast]);
 
-  // Refresh addresses when refreshTrigger changes
   useEffect(() => {
-    fetchAddresses();
-  }, [fetchAddresses, refreshTrigger]);
+    fetchDocuments();
+  }, [fetchDocuments, refreshTrigger]);
 
-  // Handle delete address
-  const handleDelete = async (addressId) => {
+  const handleDelete = async (documentId) => {
     try {
-      setIsDeleting(addressId);
-      const response = await deleteAddress(addressId);
-      console.log('Delete Address Response:', response);
+      setIsDeleting(documentId);
+      const response = await deleteDocument(documentId);
+      console.log('Delete Document Response:', response);
 
       if (response.status === true) {
         toast({
           title: "Success",
-          description: "Address deleted successfully",
+          description: "Document deleted successfully",
         });
-        setRefreshTrigger(prev => prev + 1); // Trigger refresh after delete
+        setRefreshTrigger(prev => prev + 1); // Trigger fetchDocuments
       } else {
-        throw new Error('Failed to delete address');
+        throw new Error('Failed to delete document');
       }
     } catch (error) {
-      console.error('Delete Address Error:', error);
+      console.error('Delete Document Error:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || 'Failed to delete address',
+        description: error.message || 'Failed to delete document',
       });
     } finally {
       setIsDeleting(null);
     }
   };
 
-  // Handle edit address
-  const handleEdit = (address) => {
-    setSelectedAddress(address);
+  const handleEdit = (document) => {
+    setSelectedDocument(document);
     setIsEditDialogOpen(true);
   };
 
-  // Handle success after add/edit
   const handleAddSuccess = () => {
     console.log('handleAddSuccess triggered');
-    setRefreshTrigger(prev => prev + 1); // Trigger refresh after add
-    setIsAddDialogOpen(false); // Close add dialog
+    setRefreshTrigger(prev => prev + 1);
+    setIsAddDialogOpen(false);
   };
 
   const handleEditSuccess = () => {
     console.log('handleEditSuccess triggered');
-    setRefreshTrigger(prev => prev + 1); // Trigger refresh after edit
-    setIsEditDialogOpen(false); // Close edit dialog
-    setSelectedAddress(null); // Clear selection
+    setRefreshTrigger(prev => prev + 1);
+    setIsEditDialogOpen(false);
+    setSelectedDocument(null);
   };
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="h-full flex items-center justify-center">
@@ -110,22 +107,21 @@ const AddressList = () => {
     );
   }
 
-  // Empty state
-  if (!addresses.length) {
+  if (!documents.length) {
     return (
       <div className="h-full flex items-center justify-center flex-col gap-3">
         <p className="text-center text-sm">
-          <span>You have not added <span className="font-semibold">"Address"</span> yet. </span><br />
-          <span>Please Click on <span className="font-semibold">"Add address"</span> button to add details.</span>
+          <span>You have not added <span className="font-semibold">"Document"</span> yet. </span><br />
+          <span>Please Click on <span className="font-semibold">"Add document"</span> button to add details.</span>
         </p>
         <Button
           size="sm"
           onClick={() => setIsAddDialogOpen(true)}
         >
           <CirclePlus className="mr-2 h-4 w-4" />
-          Add Address
+          Add Document
         </Button>
-        <AddAddressDialog
+        <AddDocumentDialog
           open={isAddDialogOpen}
           onOpenChange={setIsAddDialogOpen}
           onSuccess={handleAddSuccess}
@@ -136,35 +132,28 @@ const AddressList = () => {
 
   return (
     <div className="space-y-4 p-2">
-      {addresses.map((address) => (
-        <Card key={address.id} className="relative group">
+      {documents.map((doc) => (
+        <Card key={doc.id} className="relative group">
           <CardContent className="p-4">
             <div className="flex justify-between items-start">
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className={cn(
-                    "text-xs px-2 py-1 rounded-full font-medium",
-                    {
-                      'bg-blue-100 text-blue-700': address.address_type === 'Home',
-                      'bg-purple-100 text-purple-700': address.address_type === 'Office',
-                      'bg-green-100 text-green-700': address.address_type === 'Permanent',
-                      'bg-orange-100 text-orange-700': address.address_type === 'Temporary',
-                      'bg-gray-100 text-gray-700': ['Billing', 'Shipping', 'Other'].includes(address.address_type),
-                    }
+                    "text-xs px-2 py-1 rounded-full font-medium bg-blue-100 text-blue-700"
                   )}>
-                    {address.address_type}
+                    {doc.document_type}
                   </span>
                 </div>
-                <p className="text-sm">{address.street}</p>
-                <p className="text-sm">{`${address.city}, ${address.state}`}</p>
-                <p className="text-sm">{`${address.country} - ${address.zip_code}`}</p>
+                <p className="text-sm">Number: {doc.document_number}</p>
+                <p className="text-sm">Issue Date: {doc.issue_date}</p>
+                <p className="text-sm">Expiry Date: {doc.expiry_date}</p>
               </div>
               <div className="flex gap-2">
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => handleEdit(address)}
+                  onClick={() => handleEdit(doc)}
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
@@ -172,10 +161,10 @@ const AddressList = () => {
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => handleDelete(address.id)}
-                  disabled={isDeleting === address.id}
+                  onClick={() => handleDelete(doc.id)}
+                  disabled={isDeleting === doc.id}
                 >
-                  {isDeleting === address.id ? (
+                  {isDeleting === doc.id ? (
                     <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <Trash2 className="h-4 w-4" />
@@ -192,17 +181,17 @@ const AddressList = () => {
           onClick={() => setIsAddDialogOpen(true)}
         >
           <CirclePlus className="mr-2 h-4 w-4" />
-          Add Another Address
+          Add Another Document
         </Button>
-        <AddAddressDialog
+        <AddDocumentDialog
           open={isAddDialogOpen}
           onOpenChange={setIsAddDialogOpen}
           onSuccess={handleAddSuccess}
         />
-        <EditAddressDialog
+        <EditDocumentDialog
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
-          address={selectedAddress}
+          document={selectedDocument}
           onSuccess={handleEditSuccess}
         />
       </div>
@@ -210,4 +199,4 @@ const AddressList = () => {
   );
 };
 
-export default AddressList;
+export default DocumentList;

@@ -1,92 +1,167 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import {
-  Eye,
-  FileDown,
-  PenLine,
-  PlusCircle,
-  Trash,
-} from "lucide-react";
+import { PlusCircle } from "lucide-react";
+import ADDFDRDDialog from "@/components/dialogs/add-fdrd";
+import EditFDRDDialog from "@/components/dialogs/edit-fdrd";
+import DepositCard from "@/components/cards/deposit-card";
+import { deleteDeposit } from "@/utils/deposit-api";
+import { useToast } from "@/hooks/use-toast";
+import api from "@/utils/api";
 
-// Combined sample data for FDs and RDs
-const deposits = [
-  {
-    type: "FD",
-    name: "FD 1",
-    details: [
-      { label: "Type", value: "Fixed Deposit" },
-      { label: "Father Name", value: "John Doe" },
-      { label: "Account Number", value: "123456789" },
-      { label: "Deposit Amount", value: "₹1,50,000" },
-      { label: "Maturity Date", value: "31/12/2027" },
-      { label: "Interest Rate", value: "5.6%" },
-      { label: "Tenure", value: "3 Years" },
-      { label: "Linked Phone Number", value: "1234567890" },
-      { label: "Start Date", value: "31/12/2024" },
-    ],
-    document: "FD.pdf"
-  },
-  {
-    type: "RD",
-    name: "RD 1",
-    details: [
-      { label: "Type", value: "Recurring Deposit" },
-      { label: "Father Name", value: "John Doe" },
-      { label: "Account Number", value: "123456789" },
-      { label: "Monthly Installment", value: "₹10,000" },
-      { label: "Maturity Amount", value: "₹50,000,00" },
-      { label: "Interest Rate", value: "5.6%" },
-      { label: "Tenure", value: "3 Years" },
-      { label: "Linked Phone Number", value: "1234567890" },
-      { label: "Start Date", value: "31/12/2024" },
-    ],
-    document: "RD.pdf"
+// Define getFDList and getRDList
+const getFDList = async () => {
+  try {
+    const response = await api.get('/deposit/FD/list/');
+    console.log('Get FD List Response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Get FD List Error:', error.response?.data || error);
+    throw error.response?.data || error;
   }
-];
+};
 
-const DepositCard = ({ deposit }) => (
-  <Card className="p-0">
-    <CardHeader className="flex flex-row items-center justify-between">
-      <h1 className="text-lg font-semibold">{deposit.name}</h1>
-    </CardHeader>
-    <CardContent>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {deposit.details.map((item, index) => (
-          <div key={index} className="bg-popover p-2 rounded-lg">
-            <p className="text-xs text-muted-foreground">{item.label}</p>
-            <p className="font-semibold mt-2 truncate">{item.value}</p>
-          </div>
-        ))}
-      </div>
-    </CardContent>
-    <CardFooter className="border-t p-2 justify-between">
-      <div className="bg-background/85 text-xs p-2 rounded-lg flex gap-3 items-center w-60 justify-between">
-        {deposit.document}
-        <div className="flex items-center gap-2">
-          <Eye className="h-4 w-4 text-primary" />
-          <FileDown className="h-4 w-4 text-primary" />
-        </div>
-      </div>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon">
-          <PenLine className="h-4 w-4 text-foreground" />
-        </Button>
-        <Button variant="outline" size="icon">
-          <Trash className="h-4 w-4 text-foreground" />
-        </Button>
-      </div>
-    </CardFooter>
-  </Card>
-);
+const getRDList = async () => {
+  try {
+    const response = await api.get('/deposit/RD/list/');
+    console.log('Get RD List Response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Get RD List Error:', error.response?.data || error);
+    throw error.response?.data || error;
+  }
+};
 
 const FDRDTab = () => {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedDeposit, setSelectedDeposit] = useState(null);
+  const [deposits, setDeposits] = useState([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(null);
+
+  const fetchDeposits = useCallback(async () => {
+    let fdList = [];
+    let rdList = [];
+
+    // Fetch FD list
+    try {
+      const fdResponse = await getFDList();
+      if (fdResponse.status === true) {
+        fdList = fdResponse.data || [];
+      } else {
+        throw new Error("Failed to fetch FD list");
+      }
+    } catch (error) {
+      console.error("FD Fetch Failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to fetch FD list",
+      });
+    }
+
+    // Fetch RD list
+    try {
+      const rdResponse = await getRDList();
+      if (rdResponse.status === true) {
+        rdList = rdResponse.data || [];
+      } else {
+        throw new Error("Failed to fetch RD list");
+      }
+    } catch (error) {
+      console.error("RD Fetch Failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to fetch RD list",
+      });
+    }
+
+    // Combine successful fetches
+    const combinedDeposits = [...fdList, ...rdList];
+    console.log("Combined Deposits:", combinedDeposits);
+    setDeposits(combinedDeposits);
+
+    // Show a toast if no deposits are fetched
+    if (combinedDeposits.length === 0) {
+      toast({
+        variant: "info",
+        title: "No Deposits",
+        description: "No Fixed Deposits or Recurring Deposits found.",
+      });
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    fetchDeposits();
+  }, [fetchDeposits, refreshTrigger]);
+
+  const handleAddSuccess = () => {
+    console.log("handleAddSuccess triggered");
+    setRefreshTrigger((prev) => prev + 1);
+    setAddDialogOpen(false);
+  };
+
+  const handleEditSuccess = () => {
+    console.log("handleEditSuccess triggered");
+    setRefreshTrigger((prev) => prev + 1);
+    setEditDialogOpen(false);
+    setSelectedDeposit(null);
+  };
+
+  const handleEdit = (deposit) => {
+    setSelectedDeposit(deposit);
+    setEditDialogOpen(true);
+  };
+
+  const handleDelete = async (depositId) => {
+    try {
+      setIsDeleting(depositId);
+      const deposit = deposits.find((d) => d.id === depositId);
+      const depositType = deposit.deposit_type === "FD" ? "FD" : "RD";
+      const response = await deleteDeposit(depositType, depositId);
+      console.log("Delete Deposit Response:", response);
+
+      if (response.status === true) {
+        toast({
+          title: "Success",
+          description: response.message || "Deposit deleted successfully",
+        });
+        setRefreshTrigger((prev) => prev + 1);
+      } else {
+        throw new Error("Failed to delete deposit");
+      }
+    } catch (error) {
+      console.error("Delete Deposit Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to delete deposit",
+      });
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
+  if (!deposits.length) {
+    return (
+      <div className="p-2 sm:p-6 mx-auto h-full flex items-center justify-center flex-col gap-3">
+        <p className="text-center text-sm">
+          <span>You have not added <span className="font-semibold">"Deposits"</span> yet. </span><br />
+          <span>Please Click on <span className="font-semibold">"Add Deposit"</span> button to add details.</span>
+        </p>
+        <Button onClick={() => setAddDialogOpen(true)}>
+          <PlusCircle className="mr-2 h-4 w-4" /> Add Deposit
+        </Button>
+        <ADDFDRDDialog
+          open={addDialogOpen}
+          onOpenChange={setAddDialogOpen}
+          onSuccess={handleAddSuccess}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="p-2 sm:p-6 mx-auto">
@@ -94,16 +169,29 @@ const FDRDTab = () => {
         <h1 className="text-lg sm:text-xl font-semibold">
           Total Deposits ({deposits.length})
         </h1>
-        <Button
-          className="w-full sm:w-auto"
-          onClick={() => setDialogOpen(true)}
-        >
-          <PlusCircle className=" h-4 w-4" /> Add
+        <Button onClick={() => setAddDialogOpen(true)}>
+          <PlusCircle className="mr-2 h-4 w-4" /> Add Deposit
         </Button>
       </div>
+      <ADDFDRDDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        onSuccess={handleAddSuccess}
+      />
+      <EditFDRDDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        deposit={selectedDeposit}
+        onSuccess={handleEditSuccess}
+      />
       <div className="space-y-6">
-        {deposits.map((deposit, index) => (
-          <DepositCard key={index} deposit={deposit} />
+        {deposits.map((deposit) => (
+          <DepositCard
+            key={deposit.id}
+            deposit={deposit}
+            onEdit={() => handleEdit(deposit)}
+            onDelete={() => handleDelete(deposit.id)}
+          />
         ))}
       </div>
     </div>

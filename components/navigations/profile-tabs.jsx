@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { CirclePlus } from "lucide-react";
 import { motion } from "framer-motion";
 import AddressList from "./address-list";
+import ContactList from "./contact-list";
+import DocumentList from "./document-list";
 
 const ProfileTabs = ({ expanded, contentVariants, handleOpenDialog }) => {
   if (!expanded) return null;
@@ -49,37 +51,13 @@ const ProfileTabs = ({ expanded, contentVariants, handleOpenDialog }) => {
 
           <CardContent className="p-2 flex-1">
             <TabsContent value="Contact" className="h-full flex-1">
-              <div className="h-full flex items-center justify-center flex-col gap-3">
-                <p className="text-center text-sm">
-                  <span>You have not added <span className="font-semibold">"Contacts"</span> yet. </span><br />
-                  <span>Please Click on <span className="font-semibold">"Add Contact"</span> button to add details.</span>
-                </p>
-                <Button 
-                  size="sm"
-                  onClick={() => handleOpenDialog('contact')}
-                >
-                  <CirclePlus className="mr-2 h-4 w-4" />
-                  Add Contact
-                </Button>
-              </div>
+              <ContactList/>
             </TabsContent>
             <TabsContent value="Address" className="h-full flex-1">
-            <AddressList handleOpenDialog={handleOpenDialog} />
+            <AddressList />
             </TabsContent>
             <TabsContent value="Documents" className="h-full flex-1">
-              <div className="h-full flex items-center justify-center flex-col gap-3">
-                <p className="text-center text-sm">
-                  <span>You have not added <span className="font-semibold">"Documents"</span> yet. </span><br />
-                  <span>Please Click on <span className="font-semibold">"Add document"</span> button to add details.</span>
-                </p>
-                <Button 
-                  size="sm"
-                  onClick={() => handleOpenDialog('document')}
-                >
-                  <CirclePlus className="mr-2 h-4 w-4" />
-                  Add Document
-                </Button>
-              </div>
+ <DocumentList/>
             </TabsContent>
           </CardContent>
         </Card>

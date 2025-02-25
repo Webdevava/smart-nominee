@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { createFamilyMember } from "@/utils/family-api";
 
-const AddMemberDialog = ({ open, onOpenChange }) => {
+const AddMemberDialog = ({ open, onOpenChange, onSuccess }) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -40,21 +40,28 @@ const AddMemberDialog = ({ open, onOpenChange }) => {
     "Sister",
     "Spouse",
     "Child",
-    "Other"
+    "Other",
   ];
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [id]: value
+      [id]: value,
     }));
   };
 
   const handleRelationshipChange = (value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      relationship: value
+      relationship: value.toLowerCase(),
+    }));
+  };
+
+  const handleGenderChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      gender: value,
     }));
   };
 
@@ -64,13 +71,23 @@ const AddMemberDialog = ({ open, onOpenChange }) => {
 
     try {
       const response = await createFamilyMember(formData);
-      
       if (response.status) {
         toast({
           title: "Success",
-          description: "Family member added successfully",
+          description: response.message || "Family member added successfully",
         });
-        onOpenChange(false);
+        setFormData({
+          first_name: "",
+          last_name: "",
+          relationship: "",
+          dob: "",
+          gender: "male",
+          email: "",
+          phone_number: "",
+          adhaar_number: "",
+        });
+        onSuccess(); // Trigger list refresh
+        onOpenChange(false); // Close dialog
       } else {
         throw new Error(response.message || "Failed to add family member");
       }
@@ -155,7 +172,7 @@ const AddMemberDialog = ({ open, onOpenChange }) => {
                 <Label htmlFor="gender">Gender</Label>
                 <Select
                   value={formData.gender}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, gender: value }))}
+                  onValueChange={handleGenderChange}
                   required
                 >
                   <SelectTrigger>

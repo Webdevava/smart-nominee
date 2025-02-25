@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, useSearchParams } from 'next/navigation';
+import GeneralSettings from "./general";
 
 function TabHandler({ children }) {
   return <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>;
@@ -76,7 +77,8 @@ function PersonalDetails({ currentTab, onTabChange }) {
         </div>
         <TabsContent value="General Settings" className="">
           <div className="h-full rounded-lg">
-          General Settings
+  
+          <GeneralSettings/>
           </div>
         </TabsContent>
         <TabsContent value="Notification Prefrences" className="">

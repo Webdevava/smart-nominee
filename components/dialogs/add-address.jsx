@@ -64,7 +64,6 @@ const AddAddressDialog = ({ open, onOpenChange, onSuccess }) => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -85,19 +84,21 @@ const AddAddressDialog = ({ open, onOpenChange, onSuccess }) => {
       };
       
       const response = await createAddress(data);
-      
-      if (response.id) {
+      console.log('Add Address Response:', response);
+
+      if (response.status === true) {
         toast({
           title: "Success",
-          description: "Address added successfully",
+          description: response.message || "Address added successfully",
         });
         resetForm();
-        onOpenChange(false);
-        if (onSuccess) {
-          await onSuccess(); // Ensure we wait for the refresh to complete
-        }
+        onSuccess(); // Trigger list refresh in parent
+        onOpenChange(false); // Close dialog
+      } else {
+        throw new Error('Address addition failed');
       }
     } catch (error) {
+      console.error('Add Address Error:', error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -107,7 +108,6 @@ const AddAddressDialog = ({ open, onOpenChange, onSuccess }) => {
       setIsSubmitting(false);
     }
   };
-
 
   const resetForm = () => {
     setFormData({

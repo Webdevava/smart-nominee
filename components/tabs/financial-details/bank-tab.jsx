@@ -1,154 +1,108 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import {
-  Eye,
-  FileDown,
-  Pen,
-  PenLine,
-  PenSquare,
-  PlusCircle,
-  Trash,
-} from "lucide-react";
-import React, { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import ADDBankDialog from "@/components/dialogs/add-bank";
-
-const nominees = [
-  {
-    name: "Mike Deo",
-    relationship: "Father",
-    percentage: "25%",
-    contact: "1234567890",
-  },
-  {
-    name: "Sarah Deo",
-    relationship: "Mother",
-    percentage: "25%",
-    contact: "0987654321",
-  },
-  {
-    name: "Jenny Deo",
-    relationship: "Sister",
-    percentage: "25%",
-    contact: "1122334455",
-  },
-];
-
-const banks = [
-  {
-    name: "HDFC Bank",
-    details: [
-      { label: "Account Number", value: "123123123123" },
-      { label: "IFSC Code", value: "HDFC0001234" },
-      { label: "Account Holder", value: "John Doe" },
-      { label: "Account Type", value: "Savings" },
-      { label: "Branch Name", value: "Mumbai Main Branch" },
-      { label: "Linked Phone", value: "+91 9876543210" },
-    ],
-  },
-  {
-    name: "SBI Bank",
-    details: [
-      { label: "Account Number", value: "456456456456" },
-      { label: "IFSC Code", value: "SBI0005678" },
-      { label: "Account Holder", value: "Jane Doe" },
-      { label: "Account Type", value: "Current" },
-      { label: "Branch Name", value: "Delhi Main Branch" },
-      { label: "Linked Phone", value: "+91 9876501234" },
-    ],
-  },
-  {
-    name: "Axis Bank",
-    details: [
-      { label: "Account Number", value: "789789789789" },
-      { label: "IFSC Code", value: "AXIS0009101" },
-      { label: "Account Holder", value: "Alice Doe" },
-      { label: "Account Type", value: "Savings" },
-      { label: "Branch Name", value: "Bangalore Main Branch" },
-      { label: "Linked Phone", value: "+91 9876512345" },
-    ],
-  },
-];
-
-const BankCard = ({ bank }) => (
-  <Card className="p-0">
-    <CardHeader>
-      <h1 className="text-lg font-semibold">{bank.name}</h1>
-    </CardHeader>
-    <CardContent>
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {bank.details.map((item, index) => (
-          <div key={index} className="bg-popover p-2 rounded-lg">
-            <p className="text-xs text-muted-foreground">{item.label}</p>
-            <p className="font-semibold mt-2 truncate">{item.value}</p>
-          </div>
-        ))}
-      </div>
-      <div className="bg-popover rounded-lg p-4 mt-6">
-        <div className="rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader className="bg-background rounded-lg">
-              <TableRow>
-                <TableHead>Nominee</TableHead>
-                <TableHead>Relationship</TableHead>
-                <TableHead>Percentage</TableHead>
-                <TableHead>Contact No</TableHead>
-                <TableHead className="text-right"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {nominees.map((nominee, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{nominee.name}</TableCell>
-                  <TableCell>{nominee.relationship}</TableCell>
-                  <TableCell>{nominee.percentage}</TableCell>
-                  <TableCell>{nominee.contact}</TableCell>
-                  <TableCell className="text-right flex gap-2 justify-end">
-                    <Button variant="ghost" size="icon">
-                      <Trash className="h-4 w-4 text-muted-foreground" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-    </CardContent>
-    <CardFooter className="border-t p-2 justify-between">
-      <div className="bg-background/85 text-xs p-2 rounded-lg flex gap-3 items-center w-60 justify-between">
-        Passbook.pdf
-        <div className="flex items-center gap-2">
-          <Eye className="h-4 w-4 text-primary" />
-          <FileDown className="h-4 w-4 text-primary" />
-        </div>
-      </div>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon">
-          <PenLine className="h-4 w-4 text-foreground" />
-        </Button>
-        <Button variant="outline" size="icon">
-          <Trash className="h-4 w-4 text-foreground" />
-        </Button>
-      </div>
-    </CardFooter>
-  </Card>
-);
+import { PlusCircle } from "lucide-react";
+import React, { useEffect, useState, useCallback } from "react";
+import AddBankDialog from "@/components/dialogs/add-bank";
+import EditBankDialog from "@/components/dialogs/edit-bank"; // New EditBankDialog
+import { getBankList, deleteBankAccount } from "@/utils/bank-apis";
+import BankCard from "@/components/cards/bank-card";
+import { useToast } from "@/hooks/use-toast";
 
 const BankTab = () => {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedBank, setSelectedBank] = useState(null);
+  const [banks, setBanks] = useState([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(null);
+
+  const fetchBanks = useCallback(async () => {
+    try {
+      const response = await getBankList();
+      console.log("Fetch Banks Response:", response);
+      if (response.status === true) {
+        setBanks(response.data || []);
+      } else {
+        throw new Error("Failed to fetch banks");
+      }
+    } catch (error) {
+      console.error("Fetch Banks Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to fetch banks",
+      });
+      setBanks([]);
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    fetchBanks();
+  }, [fetchBanks, refreshTrigger]);
+
+  const handleAddSuccess = () => {
+    console.log("handleAddSuccess triggered");
+    setRefreshTrigger((prev) => prev + 1);
+    setAddDialogOpen(false);
+  };
+
+  const handleEditSuccess = () => {
+    console.log("handleEditSuccess triggered");
+    setRefreshTrigger((prev) => prev + 1);
+    setEditDialogOpen(false);
+    setSelectedBank(null);
+  };
+
+  const handleEdit = (bank) => {
+    setSelectedBank(bank);
+    setEditDialogOpen(true);
+  };
+
+  const handleDelete = async (bankId) => {
+    try {
+      setIsDeleting(bankId);
+      const response = await deleteBankAccount(bankId);
+      console.log("Delete Bank Response:", response);
+
+      if (response.status === true) {
+        toast({
+          title: "Success",
+          description: response.message || "Bank deleted successfully",
+        });
+        setRefreshTrigger((prev) => prev + 1);
+      } else {
+        throw new Error("Failed to delete bank");
+      }
+    } catch (error) {
+      console.error("Delete Bank Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to delete bank",
+      });
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
+  if (!banks.length) {
+    return (
+      <div className="p-2 sm:p-6 mx-auto h-full flex items-center justify-center flex-col gap-3">
+        <p className="text-center text-sm">
+          <span>You have not added <span className="font-semibold">"Banks"</span> yet. </span><br />
+          <span>Please Click on <span className="font-semibold">"Add Bank"</span> button to add details.</span>
+        </p>
+        <Button onClick={() => setAddDialogOpen(true)}>
+          <PlusCircle className="mr-2 h-4 w-4" /> Add Bank
+        </Button>
+        <AddBankDialog
+          open={addDialogOpen}
+          onOpenChange={setAddDialogOpen}
+          onSuccess={handleAddSuccess}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="p-2 sm:p-6 mx-auto">
@@ -156,17 +110,29 @@ const BankTab = () => {
         <h1 className="text-lg sm:text-xl font-semibold">
           Total Banks ({banks.length})
         </h1>
-        <Button
-          className="w-full sm:w-auto"
-          onClick={() => setDialogOpen(true)}
-        >
+        <Button className="w-full sm:w-auto" onClick={() => setAddDialogOpen(true)}>
           <PlusCircle className="mr-2 h-4 w-4" /> Add Bank
         </Button>
       </div>
-      <ADDBankDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <AddBankDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        onSuccess={handleAddSuccess}
+      />
+      <EditBankDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        bank={selectedBank}
+        onSuccess={handleEditSuccess}
+      />
       <div className="space-y-6">
-        {banks.map((bank, index) => (
-          <BankCard key={index} bank={bank} />
+        {banks.map((bank) => (
+          <BankCard
+            key={bank.id} // Use bank.id instead of index for uniqueness
+            bank={bank}
+            onEdit={() => handleEdit(bank)} // Pass edit handler
+            onDelete={() => handleDelete(bank.id)} // Pass delete handler
+          />
         ))}
       </div>
     </div>

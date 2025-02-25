@@ -117,7 +117,7 @@ export default function SignUpDialog() {
 <>
 <AuthDialog>
       <AuthDialogTrigger asChild>
-        <Button variant="outline">Sign Up</Button>
+        <Button variant="secondary" className="w-28">Sign Up</Button>
       </AuthDialogTrigger>
       <AuthDialogContent className="sm:max-w-[600px]">
         <AnimatePresence>

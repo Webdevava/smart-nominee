@@ -1,13 +1,12 @@
-'use client'
-import React, { useState } from "react";
+'use client';
+import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { SidebarClose, SidebarOpen } from "lucide-react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import AddContactDialog from "@/components/dialogs/add-contact";
-import AddAddressDialog from "@/components/dialogs/add-address";
-import AddDocumentDialog from "@/components/dialogs/add-document";
 import ProfileTabs from "./profile-tabs";
+import Cookies from 'js-cookie'; // Import js-cookie for cookie management
+import { getProfileDetail } from "@/utils/profile-apis"; // Import the API function
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(true);
@@ -16,6 +15,42 @@ const Sidebar = () => {
     address: false,
     document: false
   });
+  const [profileData, setProfileData] = useState({
+    firstName: "",
+    lastName: "",
+    dob: ""
+  });
+
+  // Fetch profile data from cookies or API
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      const profileCookie = Cookies.get('profile');
+      if (profileCookie) {
+        // Use data from cookies
+        const profile = JSON.parse(profileCookie);
+        setProfileData({
+          firstName: profile.first_name,
+          lastName: profile.last_name,
+          dob: profile.dob
+        });
+      } else {
+        // Fetch data from API if not in cookies
+        try {
+          const response = await getProfileDetail();
+          const profile = response.data; // Use the response data
+          setProfileData({
+            firstName: profile.first_name,
+            lastName: profile.last_name,
+            dob: profile.dob
+          });
+        } catch (error) {
+          console.error('Error fetching profile data:', error);
+        }
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   const toggleExpand = () => {
     setExpanded(!expanded);
@@ -163,11 +198,11 @@ const Sidebar = () => {
                 className="flex flex-col items-center gap-2"
               >
                 <motion.p variants={profileItemVariants} className="text-xl font-bold">
-                  John Deo
+                  {profileData.firstName} {profileData.lastName}
                 </motion.p>
                 <motion.p variants={profileItemVariants} className="flex items-center gap-2 text-xs">
                   <span>Date of Birth:</span>
-                  <span className="font-semibold">2 May 1987</span>
+                  <span className="font-semibold">{profileData.dob}</span>
                 </motion.p>
               </motion.div>
             )}

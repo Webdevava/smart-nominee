@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Eye, EyeOff } from 'lucide-react'; // Import Eye and EyeOff icons
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation'; // or 'next/router' for older Next.js versions
 import {
@@ -22,6 +22,7 @@ export default function LoginDialog() {
   const router = useRouter(); // Initialize the router
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const [formData, setFormData] = useState({
     mobile: '',
     password: ''
@@ -65,7 +66,7 @@ export default function LoginDialog() {
   return (
     <AuthDialog>
       <AuthDialogTrigger asChild>
-        <Button variant="outline">Login</Button>
+        <Button variant="default" className="w-28" >Login</Button>
       </AuthDialogTrigger>
       <AuthDialogContent className="sm:max-w-[425px]">
         <AnimatePresence>
@@ -126,7 +127,7 @@ export default function LoginDialog() {
                     required
                   />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col relative">
                   <Label
                     htmlFor="password"
                     className="text-left text-[0.7rem] opacity-50 mb-1"
@@ -135,13 +136,24 @@ export default function LoginDialog() {
                   </Label>
                   <Input
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"} // Toggle between text and password
                     placeholder="Enter password"
-                    className="col-span-3 placeholder:text-[0.8rem]"
+                    className="col-span-3 placeholder:text-[0.8rem] pr-10" // Add padding for the eye icon
                     value={formData.password}
                     onChange={handleInputChange}
                     required
                   />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-10 transform -translate-y-1/2"
+                    onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-500" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-500" />
+                    )}
+                  </button>
                 </div>
               </div>
               

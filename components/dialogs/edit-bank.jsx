@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Check, CloudUpload } from "lucide-react";
-import { validateIFSC, addBankAccount, addPassbook } from "@/utils/bank-apis";
+import { validateIFSC, editBankAccount, addPassbook } from "@/utils/bank-apis";
 import { useToast } from "@/hooks/use-toast";
 
 const StepIndicator = ({ number, isCompleted, isCurrent }) => {
@@ -28,7 +28,6 @@ const StepIndicator = ({ number, isCompleted, isCurrent }) => {
       </div>
     );
   }
-
   if (isCurrent) {
     return (
       <div className="rounded-full w-6 h-6 flex items-center justify-center border-2 border-primary bg-transparent relative">
@@ -36,15 +35,15 @@ const StepIndicator = ({ number, isCompleted, isCurrent }) => {
       </div>
     );
   }
-
   return (
     <div className="rounded-full w-6 h-6 flex items-center justify-center border-2 border-muted-foreground" />
   );
 };
 
-const AddBankDialog = ({ open, onOpenChange, onSuccess }) => {
+const EditBankDialog = ({ open, onOpenChange, bank, onSuccess }) => {
   const { toast } = useToast();
   const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [bankDetails, setBankDetails] = useState({
     account_holder_name: "",
     bank_name: "",
@@ -59,12 +58,29 @@ const AddBankDialog = ({ open, onOpenChange, onSuccess }) => {
     notes: "",
   });
   const [file, setFile] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const steps = [
     { number: 1, title: "Bank Details" },
     { number: 2, title: "Upload Bank Doc" },
   ];
+
+  useEffect(() => {
+    if (bank) {
+      setBankDetails({
+        account_holder_name: bank.account_holder_name || "",
+        bank_name: bank.bank_name || "",
+        branch_name: bank.branch_name || "",
+        account_number: bank.account_number || "",
+        ifsc_code: bank.ifsc_code || "",
+        account_type: bank.account_type || "Savings",
+        linked_mobile_number: bank.linked_mobile_number || "",
+        account_balance: bank.account_balance || 0,
+        account_opening_date: bank.account_opening_date || "",
+        account_status: bank.account_status || "Active",
+        notes: bank.notes || "",
+      });
+    }
+  }, [bank]);
 
   const handleIFSCValidation = async () => {
     try {
@@ -85,39 +101,39 @@ const AddBankDialog = ({ open, onOpenChange, onSuccess }) => {
     }
   };
 
-  const handleAddBank = async () => {
+  const handleSubmit = async () => {
+    if (step === 1) {
+      setStep(2);
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      // Step 1: Add the bank account
-      const addBankResponse = await addBankAccount(bankDetails);
-      console.log("Add Bank Response:", addBankResponse);
+      const response = await editBankAccount(bank.id, bankDetails);
+      console.log("Edit Bank Response:", response);
 
-      if (addBankResponse.status === true) {
-        const bankId = addBankResponse.data.id; // Ensure this matches your API response structure
-
-        // Step 2: Upload the passbook if a file is selected
-        if (file && bankId) {
-          await addPassbook(bankId, file);
+      if (response.status === true) {
+        if (file) {
+          await addPassbook(bank.id, file);
           console.log("Passbook Uploaded");
         }
 
         toast({
           title: "Success",
-          description: addBankResponse.message || "Bank account added successfully",
+          description: response.message || "Bank account updated successfully",
         });
-
         resetForm();
-        onSuccess(); // Trigger list refresh in parent
-        onOpenChange(false); // Close dialog
+        onSuccess();
+        onOpenChange(false);
       } else {
-        throw new Error("Bank account addition failed");
+        throw new Error("Bank account update failed");
       }
     } catch (error) {
-      console.error("Add Bank Error:", error);
+      console.error("Edit Bank Error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to add bank account",
+        description: error.message || "Failed to update bank account",
       });
     } finally {
       setIsSubmitting(false);
@@ -303,12 +319,8 @@ const AddBankDialog = ({ open, onOpenChange, onSuccess }) => {
                 <CloudUpload className="h-12 w-12 text-primary" />
               </div>
               <div>
-                <p className="text-base font-medium">
-                  Select your file or drag and drop
-                </p>
-                <p className="text-xs text-gray-500">
-                  PNG, PDF, JPG file accepted (Max 5mb)
-                </p>
+                <p className="text-base font-medium">Select your file or drag and drop</p>
+                <p className="text-xs text-gray-500">PNG, PDF, JPG file accepted (Max 5mb)</p>
               </div>
               <Button
                 type="button"
@@ -337,14 +349,14 @@ const AddBankDialog = ({ open, onOpenChange, onSuccess }) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] p-0 h-[75vh] flex flex-col">
         <DialogHeader className="p-4 border-b">
-          <DialogTitle>Add Bank Details</DialogTitle>
+          <DialogTitle>Edit Bank Details</DialogTitle>
         </DialogHeader>
 
         <div className="px-4 py-3 border-b">
           <div className="flex justify-between items-center">
             {steps.map((s, index) => (
               <React.Fragment key={s.number}>
-                <div className={`flex items-center ${s.number > step ? 'opacity-50' : ''}`}>
+                <div className={`flex items-center ${s.number > step ? "opacity-50" : ""}`}>
                   <StepIndicator
                     number={s.number}
                     isCompleted={step > s.number}
@@ -356,7 +368,7 @@ const AddBankDialog = ({ open, onOpenChange, onSuccess }) => {
                   </div>
                 </div>
                 {index < steps.length - 1 && (
-                  <div className={`flex-1 mx-4 h-px ${step > index + 1 ? 'bg-primary' : 'bg-gray-200'}`} />
+                  <div className={`flex-1 mx-4 h-px ${step > index + 1 ? "bg-primary" : "bg-gray-200"}`} />
                 )}
               </React.Fragment>
             ))}
@@ -364,9 +376,7 @@ const AddBankDialog = ({ open, onOpenChange, onSuccess }) => {
         </div>
 
         <form className="flex flex-col h-full">
-          <div className="flex-1 p-4 overflow-y-auto">
-            {renderStepContent()}
-          </div>
+          <div className="flex-1 p-4 overflow-y-auto">{renderStepContent()}</div>
 
           <DialogFooter className="border-t p-4">
             <Button
@@ -384,13 +394,10 @@ const AddBankDialog = ({ open, onOpenChange, onSuccess }) => {
             <Button
               type="button"
               className="w-32"
-              onClick={() => {
-                if (step === 2) handleAddBank();
-                else setStep(step + 1);
-              }}
+              onClick={handleSubmit}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Saving..." : step === 2 ? "Save" : "Next"}
+              {isSubmitting ? "Updating..." : step === 2 ? "Update" : "Next"}
             </Button>
           </DialogFooter>
         </form>
@@ -399,4 +406,4 @@ const AddBankDialog = ({ open, onOpenChange, onSuccess }) => {
   );
 };
 
-export default AddBankDialog;
+export default EditBankDialog;
