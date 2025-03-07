@@ -6,28 +6,33 @@ const FeaturesSection = () => {
   const features = [
     {
       image: "/images/about.png",
-      title: "Lorem Ipsum is simply dummy text of the printing?",
-      description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      title: "Secure Asset & Debt Storage",
+      description: "Your financial footprint, safeguarded until the right moment. Store all your transactions, assets, debts—whether your family knows about them or not."
     },
     {
       image: "/images/about.png",
-      title: "Lorem Ipsum is simply dummy text of the printing?",
-      description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      title: "Nominee Management & Controlled Access",
+      description: "Your loved ones should never be left in the dark. Assign nominees, define access levels, and control when they receive the information."
     },
     {
       image: "/images/about.png",
-      title: "Lorem Ipsum is simply dummy text of the printing?",
-      description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      title: "Smart Inactivity Detection & Triple Confirmation System",
+      description: "Because mistakes are not an option. Before we disclose any information to your nominees, we verify your inactivity at least 3 times through multiple communication channels. If there is no response, only then do we share the data."
     },
     {
       image: "/images/about.png",
-      title: "Lorem Ipsum is simply dummy text of the printing?",
-      description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      title: "Hidden or Delayed Asset Disclosure",
+      description: "Protect your family's future the way you want. Maybe you have investments you don’t want your family to know about until the right time. Maybe you fear sudden wealth will make them lazy, careless, or unmotivated. You decide when and how your financial secrets are revealed."
     },
     {
       image: "/images/about.png",
-      title: "Lorem Ipsum is simply dummy text of the printing?",
-      description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      title: "Unaccounted Transactions",
+      description: "Your secrets, protected and revealed on your terms. If you have transactions or assets that you want to disclose only after your passing, you can store them here securely. No immediate reporting. No interference. Only your chosen nominee will access it—when you allow it."
+    },
+    {
+      image: "/images/about.png",
+      title: "Insights & Reports",
+      description: "Your financial roadmap, always clear. Understand your total assets, liabilities, and nominee allocations with advanced analytics."
     }
   ];
 
@@ -85,10 +90,6 @@ const FeaturesSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4">
             Our Top Key Features That Empower The Users
           </h2>
-          <p className="text-gray-600">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
-          </p>
         </div>
 
         {/* Features Display */}
@@ -173,11 +174,11 @@ const FeatureCard = ({ feature }) => (
         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQrJyEkKzQ2MC4wNjAwMDYwMDA2MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA/2wBDAR0XFyAeIBsgHB8gIyIgID8zKjA/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz//wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
       />
     </div>
-    <div className="p-6">
-      <h3 className="text-xl font-semibold mb-2">
+    <div className="p-4">
+      <h3 className="text-lg font-semibold mb-2">
         {feature.title}
       </h3>
-      <p className="text-gray-600">
+      <p className="text-gray-600 text-sm">
         {feature.description}
       </p>
     </div>

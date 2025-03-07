@@ -19,6 +19,7 @@ const EditContactDialog = ({ open, onOpenChange, contact, onSuccess }) => {
     email: '',
     phone_number: '',
   });
+  const [contactType, setContactType] = useState('');
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -27,15 +28,17 @@ const EditContactDialog = ({ open, onOpenChange, contact, onSuccess }) => {
         email: contact.email || '',
         phone_number: contact.phone_number || '',
       });
+      // Determine contact type
+      setContactType(contact.email ? 'email' : 'phone');
     }
   }, [contact]);
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.email && !formData.phone_number) {
-      newErrors.general = 'Either email or phone number is required';
-    } else if (formData.email && formData.phone_number) {
-      newErrors.general = 'You can only update either email or phone number, not both';
+    if (contactType === 'email' && !formData.email) {
+      newErrors.email = 'Email is required';
+    } else if (contactType === 'phone' && !formData.phone_number) {
+      newErrors.phone_number = 'Phone number is required';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -47,22 +50,24 @@ const EditContactDialog = ({ open, onOpenChange, contact, onSuccess }) => {
       ...prev,
       [name]: value,
     }));
-    if (errors[name] || errors.general) {
+    if (errors[name]) {
       setErrors(prev => ({
         ...prev,
         [name]: '',
-        general: '',
       }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm() || !contact) return;
 
     try {
       setIsSubmitting(true);
-      const payload = formData.email ? { email: formData.email } : { phone_number: formData.phone_number };
+      const payload = contactType === 'email' 
+        ? { email: formData.email } 
+        : { phone_number: formData.phone_number };
+        
       const response = await updateContact(contact.id, payload);
       console.log('Edit Contact Response:', response);
 
@@ -71,9 +76,7 @@ const EditContactDialog = ({ open, onOpenChange, contact, onSuccess }) => {
           title: "Success",
           description: response.message || "Contact updated successfully",
         });
-        resetForm();
         onSuccess(); // Trigger list refresh in parent
-        onOpenChange(false); // Close dialog
       } else {
         throw new Error('Contact update failed');
       }
@@ -89,13 +92,8 @@ const EditContactDialog = ({ open, onOpenChange, contact, onSuccess }) => {
     }
   };
 
-  const resetForm = () => {
-    setFormData({ email: '', phone_number: '' });
-    setErrors({});
-  };
-
   const handleClose = () => {
-    resetForm();
+    setErrors({});
     onOpenChange(false);
   };
 
@@ -103,32 +101,40 @@ const EditContactDialog = ({ open, onOpenChange, contact, onSuccess }) => {
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Contact</DialogTitle>
+          <DialogTitle>
+            Edit {contactType === 'email' ? 'Email' : 'Phone Number'}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Enter email"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="phone_number">Phone Number</Label>
-              <Input
-                id="phone_number"
-                name="phone_number"
-                value={formData.phone_number}
-                onChange={handleInputChange}
-                placeholder="Enter phone number"
-              />
-            </div>
-            {errors.general && (
-              <p className="text-destructive text-sm">{errors.general}</p>
+            {contactType === 'email' ? (
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Enter email"
+                />
+                {errors.email && (
+                  <p className="text-destructive text-sm">{errors.email}</p>
+                )}
+              </div>
+            ) : (
+              <div className="grid gap-2">
+                <Label htmlFor="phone_number">Phone Number</Label>
+                <Input
+                  id="phone_number"
+                  name="phone_number"
+                  value={formData.phone_number}
+                  onChange={handleInputChange}
+                  placeholder="Enter phone number"
+                />
+                {errors.phone_number && (
+                  <p className="text-destructive text-sm">{errors.phone_number}</p>
+                )}
+              </div>
             )}
           </div>
           <DialogFooter>

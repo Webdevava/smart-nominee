@@ -104,19 +104,22 @@ export const Hero = () => {
         <div className="flex flex-col-reverse lg:flex-row items-center justify-between pt-12 lg:pt-24 pb-12 lg:pb-24 lg:pb-0">
           {/* Text Content */}
           <div className="space-y-6 text-center lg:text-left text-white mt-8 lg:mt-0">
-            <h1 className="text-3xl lg:text-5xl lg:text-7xl font-bold leading-tight">
-              <span className="block">Secure Your</span>
-              <span className="block text-black">Financial Future,</span>
-              <span className="block">Hassle-Free</span>
+            <h1 className="text-3xl lg:text-6xl font-bold leading-tight">
+              <span className="block">Your Life. Your Legacy.</span>
+              <span className="block text-black">Protected & Shared</span>
+              <span className="block">Only When It Matters.</span>
             </h1>
             <p className="text-base lg:text-xl max-w-xl mx-auto lg:mx-0">
-              Easily manage and track your bank accounts, investments, and
-              insurance policies while ensuring your loved ones have access
-              when they need it the most.
+              Your hard-earned assets, your hidden investments, and your responsibilities should never be lost or forgotten. Store them securely and ensure they reach your loved ones—at the right time, in the right way.
             </p>
-            <Button className="px-8 py-6 rounded-lg text-lg font-semibold">
-              Get Started
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <Button className="px-8 py-4 rounded-lg text-lg font-semibold bg-white text-blue-600 hover:bg-gray-200">
+                Get Started Today
+              </Button>
+              <Button className="px-8 py-4 rounded-lg text-lg font-semibold text-white hover:bg-white hover:text-blue-600">
+                Explore Features
+              </Button>
+            </div>
           </div>
 
           {/* Image */}
@@ -124,7 +127,7 @@ export const Hero = () => {
             <img
               src="/images/hero.png"
               alt="Person showing mobile app"
-              className="w-full max-w-2xl lg:max-w-none  rounded-lg"
+              className="w-full max-w-2xl lg:max-w-none rounded-lg"
             />
           </div>
         </div>
@@ -132,6 +135,7 @@ export const Hero = () => {
     </div>
   );
 };
+
 
 export default function Home() {
   return (

@@ -24,7 +24,7 @@ export const updateProfile = async (profileData) => {
  * @param {Object} file - Passbook file to upload
  * @returns {Promise<Object>} - Response data from the API
  */
-export const addPassbook = async (file) => {
+export const addProfile = async (file) => {
   try {
     const formData = new FormData();
     formData.append("file", file);

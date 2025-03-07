@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { SidebarClose, SidebarOpen } from "lucide-react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import ProfileTabs from "./profile-tabs";
-import Cookies from 'js-cookie'; // Import js-cookie for cookie management
-import { getProfileDetail } from "@/utils/profile-apis"; // Import the API function
+import Cookies from 'js-cookie';
+import { getProfileDetail } from "@/utils/profile-apis";
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(true);
@@ -18,7 +18,8 @@ const Sidebar = () => {
   const [profileData, setProfileData] = useState({
     firstName: "",
     lastName: "",
-    dob: ""
+    dob: "",
+    profilePicture: ""
   });
 
   // Fetch profile data from cookies or API
@@ -31,7 +32,8 @@ const Sidebar = () => {
         setProfileData({
           firstName: profile.first_name,
           lastName: profile.last_name,
-          dob: profile.dob
+          dob: profile.dob || "Not specified",
+          profilePicture: profile.profile_picture || ""
         });
       } else {
         // Fetch data from API if not in cookies
@@ -41,7 +43,8 @@ const Sidebar = () => {
           setProfileData({
             firstName: profile.first_name,
             lastName: profile.last_name,
-            dob: profile.dob
+            dob: profile.dob || "Not specified",
+            profilePicture: profile.profile_picture || ""
           });
         } catch (error) {
           console.error('Error fetching profile data:', error);
@@ -143,6 +146,13 @@ const Sidebar = () => {
     },
   };
 
+  // Generate initials for avatar fallback
+  const getInitials = () => {
+    const first = profileData.firstName ? profileData.firstName.charAt(0) : '';
+    const last = profileData.lastName ? profileData.lastName.charAt(0) : '';
+    return `${first}${last}`;
+  };
+
   return (
     <LayoutGroup>
       <motion.aside
@@ -183,8 +193,11 @@ const Sidebar = () => {
             transition={{ type: "spring", stiffness: 200, damping: 25 }}
           >
             <Avatar className="w-full h-full">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>JD</AvatarFallback>
+              <AvatarImage 
+                src={profileData.profilePicture || ""}
+                alt={`${profileData.firstName} ${profileData.lastName}`} 
+              />
+              <AvatarFallback>{getInitials()}</AvatarFallback>
             </Avatar>
           </motion.div>
 
@@ -202,7 +215,7 @@ const Sidebar = () => {
                 </motion.p>
                 <motion.p variants={profileItemVariants} className="flex items-center gap-2 text-xs">
                   <span>Date of Birth:</span>
-                  <span className="font-semibold">{profileData.dob}</span>
+                  <span className="font-semibold">{profileData.dob || "Not specified"}</span>
                 </motion.p>
               </motion.div>
             )}

@@ -11,27 +11,23 @@ const AboutUs = () => {
             <span className="inline-block bg-gradient-to-r from-blue-50 to-transparent text-blue-600 px-4 py-2 text-sm font-medium ">
               About Us
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold mt-4">Who We Are</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mt-4">Why We Exist</h2>
           </div>
 
           <p className="text-gray-600 leading-relaxed text-left">
-            At Smart Nominee, we believe that financial planning should be simple,
-            transparent, and secure. Managing multiple assets and ensuring that your loved
-            ones have access to them at the right time can be overwhelming. That's why we
-            built a smart, all-in-one platform to help individuals organize, track, and safeguard
-            their financial details with ease.
+          Life is unpredictable, but your legacy shouldn't be. We created this platform to ensure that your personal, financial, and nominee details are always accessible, safeguarded, and shared with the people who matter most—only when it is truly needed.
           </p>
+
 
           <div className="space-y-4">
             <h3 className="text-xl md:text-2xl font-bold flex items-center gap-2 justify-center md:justify-start">
-              Our Mission
-              <span role="img" aria-label="rocket">🚀</span>
+              What Makes Us Different?
             </h3>
-            <p className="text-gray-600 leading-relaxed text-left">
-              To empower individuals with a secure and user-friendly platform for managing their
-              financial assets, tracking nominee details, and ensuring seamless access for their
-              families when it matters the most.
-            </p>
+            <ul className="text-gray-600 leading-relaxed text-left list-disc pl-6">
+              <li>We Don’t Just Store Data – We Protect It Until It’s Needed.</li>
+              <li>We Verify Before We Share – No Premature Disclosure.</li>
+              <li>Your Privacy Is Our Priority – Hidden Transactions Stay Hidden Until You Decide Otherwise.</li>
+            </ul>
           </div>
 
           <div className="flex justify-center md:justify-start">

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function MainLayout({ children }) {
+export default function SettingsLayout({ children }) {
   return (
     <main className="flex flex-1">
         <div
